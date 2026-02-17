@@ -40,7 +40,7 @@
       "id": "cabinet-01",
       "name": "Sofa",
       "price": 749,
-      "category": "storage",
+      "category": "bedroom",
       "description": "Modern sofa with clean lines and premium fabric. Perfect for contemporary living spaces.",
       "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80",
       "modelUrl": "/assets/image/sofa.glb",
