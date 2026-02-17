@@ -11,16 +11,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+    const apiKey = process.env.GOOGLE_API_KEY; // Changed from NEXT_PUBLIC_GOOGLE_API_KEY
     if (!apiKey) {
+      console.error('Google API key not configured');
       return NextResponse.json(
         { error: 'Google API key not configured' },
         { status: 500 }
       );
     }
 
+    // Remove the data:image/jpeg;base64, prefix if it exists
+    const base64Data = imageBase64.includes('base64,')
+      ? imageBase64.split('base64,')[1]
+      : imageBase64;
+
+    console.log('Sending request to Gemini API...');
+
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`, // Using gemini-1.5-flash instead
       {
         method: 'POST',
         headers: {
@@ -43,47 +51,93 @@ Format your response as JSON with these exact keys:
   "style": "...",
   "colors": ["color1", "color2", "color3"],
   "categories": ["category1", "category2", "category3"]
-}`,
+}
+
+Return ONLY the JSON, no other text.`,
                 },
                 {
                   inlineData: {
                     mimeType: 'image/jpeg',
-                    data: imageBase64,
+                    data: base64Data,
                   },
                 },
               ],
             },
           ],
+          generationConfig: {
+            temperature: 0.4,
+            topK: 32,
+            topP: 1,
+            maxOutputTokens: 1024,
+          },
         }),
       }
     );
 
     if (!response.ok) {
-      const error = await response.json();
-      console.error('Gemini API error:', error);
+      const errorText = await response.text();
+      console.error('Gemini API error response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+
       return NextResponse.json(
-        { error: 'Failed to analyze room' },
+        { error: `Gemini API error: ${response.status} ${response.statusText}` },
         { status: response.status }
       );
     }
 
     const data = await response.json();
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    console.log('Gemini API response:', JSON.stringify(data, null, 2));
 
-    if (!content) {
+    // Check if we have a valid response
+    if (!data.candidates || data.candidates.length === 0) {
+      console.error('No candidates in response:', data);
       return NextResponse.json(
-        { error: 'No analysis generated' },
+        { error: 'No analysis generated - empty response' },
         { status: 500 }
       );
     }
 
-    // Parse the JSON response from Gemini
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    const analysis = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+    const content = data.candidates[0]?.content?.parts?.[0]?.text;
 
-    if (!analysis) {
+    if (!content) {
+      console.error('No content in response:', data.candidates[0]);
       return NextResponse.json(
-        { error: 'Failed to parse analysis' },
+        { error: 'No analysis generated - missing content' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Raw content from Gemini:', content);
+
+    // Try to extract JSON from the response
+    let analysis;
+    try {
+      // First, try to parse the entire content as JSON
+      analysis = JSON.parse(content);
+    } catch (e) {
+      // If that fails, try to extract JSON from the text
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          analysis = JSON.parse(jsonMatch[0]);
+        } catch (e2) {
+          console.error('Failed to parse extracted JSON:', jsonMatch[0]);
+          throw new Error('Invalid JSON format');
+        }
+      } else {
+        console.error('No JSON found in content:', content);
+        throw new Error('No JSON found in response');
+      }
+    }
+
+    // Validate the analysis has the required fields
+    if (!analysis.description || !analysis.style || !analysis.colors || !analysis.categories) {
+      console.error('Invalid analysis structure:', analysis);
+      return NextResponse.json(
+        { error: 'Invalid analysis format' },
         { status: 500 }
       );
     }
@@ -92,7 +146,7 @@ Format your response as JSON with these exact keys:
   } catch (error) {
     console.error('Error analyzing room:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     );
   }
