@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { FileUploadZone } from '@/components/FileUploadZone';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { imageToBase64 } from '@/lib/image-utils';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { FileUploadZone } from "@/components/FileUploadZone";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { imageToBase64 } from "@/lib/image-utils";
 
 export default function Home() {
   const router = useRouter();
@@ -19,16 +19,16 @@ export default function Home() {
     try {
       const base64 = await imageToBase64(file);
 
-      const response = await fetch('/api/analyze-room', {
-        method: 'POST',
+      const response = await fetch("/api/analyze-room", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ imageBase64: base64 }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to analyze room');
+        throw new Error("Failed to analyze room");
       }
 
       const analysis = await response.json();
@@ -38,20 +38,24 @@ export default function Home() {
       router.push(`/analysis?data=${analysisJson}`);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'An error occurred while analyzing the room'
+        err instanceof Error
+          ? err.message
+          : "An error occurred while analyzing the room",
       );
       setIsLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-card to-background">
+    <main className="min-h-screen bg-linear-to-b from-background via-card to-background">
       {/* Header */}
       <div className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-primary">Room Design Analyzer</h1>
+              <h1 className="text-3xl font-bold text-primary">
+                Room Design Analyzer
+              </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 AI-powered furniture recommendations for your space
               </p>
@@ -69,7 +73,8 @@ export default function Home() {
               Transform Your Space with AI
             </h2>
             <p className="text-balance text-lg text-muted-foreground">
-              Upload a photo of your room and get personalized furniture recommendations powered by Google Gemini AI
+              Upload a photo of your room and get personalized furniture
+              recommendations powered by Google Gemini AI
             </p>
           </div>
 
@@ -78,7 +83,10 @@ export default function Home() {
             <LoadingSpinner message="Analyzing your room... This may take a moment." />
           ) : (
             <div className="space-y-4">
-              <FileUploadZone onFileSelect={handleFileSelect} isLoading={isLoading} />
+              <FileUploadZone
+                onFileSelect={handleFileSelect}
+                isLoading={isLoading}
+              />
 
               {error && (
                 <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
@@ -94,9 +102,12 @@ export default function Home() {
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
                 <span className="text-lg">📸</span>
               </div>
-              <h3 className="font-semibold text-foreground mb-2">Upload & Analyze</h3>
+              <h3 className="font-semibold text-foreground mb-2">
+                Upload & Analyze
+              </h3>
               <p className="text-sm text-muted-foreground">
-                Upload any room photo and let our AI analyze its style, colors, and layout
+                Upload any room photo and let our AI analyze its style, colors,
+                and layout
               </p>
             </div>
 
@@ -104,9 +115,12 @@ export default function Home() {
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
                 <span className="text-lg">✨</span>
               </div>
-              <h3 className="font-semibold text-foreground mb-2">Get Recommendations</h3>
+              <h3 className="font-semibold text-foreground mb-2">
+                Get Recommendations
+              </h3>
               <p className="text-sm text-muted-foreground">
-                Receive curated furniture recommendations tailored to your room's aesthetic
+                Receive curated furniture recommendations tailored to your
+                room's aesthetic
               </p>
             </div>
 
@@ -114,9 +128,12 @@ export default function Home() {
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
                 <span className="text-lg">🏠</span>
               </div>
-              <h3 className="font-semibold text-foreground mb-2">Visualize in 3D & AR</h3>
+              <h3 className="font-semibold text-foreground mb-2">
+                Visualize in 3D & AR
+              </h3>
               <p className="text-sm text-muted-foreground">
-                View products in 3D and use AR to preview them in your actual room
+                View products in 3D and use AR to preview them in your actual
+                room
               </p>
             </div>
           </div>
