@@ -1,0 +1,52 @@
+{
+  "products": [
+    {
+      "id": "sofa-01",
+      "name": "Modern Minimalist Sofa",
+      "price": 1299,
+      "category": "seating",
+      "description": "Sleek 3-seater sofa with clean lines and premium fabric. Perfect for contemporary living spaces.",
+      "image": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80",
+      "modelUrl": "/assets/image/modern_sofa.glb",
+      "dimensions": "W: 220cm × D: 95cm × H: 85cm",
+      "material": "Premium linen blend",
+      "style": "Contemporary"
+    },
+    {
+      "id": "chair-01",
+      "name": "Chair with Curved Silhouette",
+      "price": 599,
+      "category": "seating",
+      "description": "Chair with curved silhouette and a sleek, modern design.",
+      "image": "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=500&q=80",
+      "modelUrl": "/assets/image/post_apocalyptic_ruined_chair_style_1.glb",
+      "dimensions": "W: 85cm × D: 82cm × H: 92cm",
+      "material": "Velvet upholstery",
+      "style": "Mid-Century Modern"
+    },
+    {
+      "id": "table-01",
+      "name": "Table with Natural Wood Finish",
+      "price": 899,
+      "category": "dining",
+      "description": "Table with natural wood finish and a sleek, modern design.",
+      "image": "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=500&q=80",
+      "modelUrl": "/assets/image/side_table.glb",
+      "dimensions": "W: 180cm × D: 90cm × H: 75cm",
+      "material": "Solid walnut wood",
+      "style": "Scandinavian"
+    },
+    {
+      "id": "cabinet-01",
+      "name": "Sofa",
+      "price": 749,
+      "category": "storage",
+      "description": "Modern sofa with clean lines and premium fabric. Perfect for contemporary living spaces.",
+      "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80",
+      "modelUrl": "/assets/image/sofa.glb",
+      "dimensions": "W: 120cm × D: 40cm × H: 180cm",
+      "material": "Oak veneer with metal accents",
+      "style": "Industrial"
+    }
+  ]
+}
