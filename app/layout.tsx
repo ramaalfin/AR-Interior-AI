@@ -8,8 +8,8 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AR Interior AI",
-  description: "Created with v0",
-  generator: "v0.app",
+  description: "Analyze your room interiors with AI",
+  generator: "Next.js",
   icons: {
     icon: [
       {
